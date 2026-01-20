@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.extendedclip.papi.expansion.player'
+version = '1.0.0'
+description = 'PlaceholderAPI expansion for player placeholders'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+}
+
+
+dependencies {
+    compileOnly files('libs/HytaleServer.jar')
+    compileOnly files('libs/papiHytale.jar')
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('jar') {
+    archiveBaseName.set('PAPI-Expansion-HyPlayer')
+    manifest {
+        attributes(
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version
+        )
+    }
+}
