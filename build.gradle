@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'at.helpch.papi.expansion.player'
-version = '1.0.2'
+version = '1.0.3'
 description = 'PlaceholderAPI expansion for Hytale player placeholders'
 
 repositories {

@@ -20,13 +20,13 @@ public final class PlayerExpansion extends PlaceholderExpansion {
   }
   
   public String getVersion() {
-    return "1.0.2";
+    return "1.0.3";
   }
   
   public String onPlaceholderRequest(PlayerRef player, String identifier) {
     if (player == null)
       return ""; 
-    
+
     switch (identifier) {
       case "uuid":
         return player.getUuid().toString();
