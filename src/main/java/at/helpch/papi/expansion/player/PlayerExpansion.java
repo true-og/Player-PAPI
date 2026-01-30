@@ -12,7 +12,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 public final class PlayerExpansion extends PlaceholderExpansion {
   public String getIdentifier() {
-    return "hyPlayer";
+    return "Player";
   }
   
   public String getAuthor() {
@@ -20,7 +20,7 @@ public final class PlayerExpansion extends PlaceholderExpansion {
   }
   
   public String getVersion() {
-    return "1.0.3";
+    return "1.0.4";
   }
   
   public String onPlaceholderRequest(PlayerRef player, String identifier) {

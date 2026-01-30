@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'at.helpch.papi.expansion.player'
-version = '1.0.3'
+version = '1.0.4'
 description = 'PlaceholderAPI expansion for Hytale player placeholders'
 
 repositories {
@@ -36,7 +36,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.named('jar') {
-    archiveBaseName.set('PAPI-Expansion-HyPlayer')
+    archiveBaseName.set('PAPI-Expansion-Player')
     manifest {
         attributes(
             'Implementation-Title': project.name,
