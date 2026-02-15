@@ -9,23 +9,26 @@ import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.universe.world.worldgen.provider.IWorldGenProvider;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public final class PlayerExpansion extends PlaceholderExpansion {
   public String getIdentifier() {
     return "Player";
   }
-  
+
   public String getAuthor() {
     return "HelpChat";
   }
-  
+
   public String getVersion() {
-    return "1.0.4";
+    return "1.0.5";
   }
-  
+
   public String onPlaceholderRequest(PlayerRef player, String identifier) {
     if (player == null)
-      return ""; 
+      return "";
 
     switch (identifier) {
       case "uuid":
@@ -46,19 +49,19 @@ public final class PlayerExpansion extends PlaceholderExpansion {
         return String.valueOf(player.getHeadRotation().getYaw());
       case "pitch":
         return String.valueOf(player.getHeadRotation().getPitch());
-    } 
+    }
 
     Ref<EntityStore> ref = player.getReference();
 
     if (ref == null || !ref.isValid())
-      return null; 
+      return null;
 
     Store<EntityStore> store = ref.getStore();
-    Player p = (Player)store.getComponent(ref, Player.getComponentType());
-    EntityStatMap stats = (EntityStatMap)store.getComponent(ref, EntityStatMap.getComponentType());
+    Player p = (Player) store.getComponent(ref, Player.getComponentType());
+    EntityStatMap stats = (EntityStatMap) store.getComponent(ref, EntityStatMap.getComponentType());
 
     if (p == null)
-      return null; 
+      return null;
 
     switch (identifier) {
       case "has_played_before":
@@ -69,6 +72,16 @@ public final class PlayerExpansion extends PlaceholderExpansion {
         return p.getGameMode().name();
       case "world":
         return p.getWorld().getName();
+      case "world_displayname":
+        String displayName = p.getWorld().getWorldConfig().getDisplayName();
+        if (displayName == null) {
+          return p.getWorld().getName();
+        }
+        return displayName;
+      case "world_worldgen_type":
+        return worldGenType(p.getWorld().getWorldConfig().getWorldGenProvider());
+      case "world_worldgen_name":
+        return worldGenName(p.getWorld().getWorldConfig().getWorldGenProvider());
       case "biome":
         return p.getWorldMapTracker().getCurrentBiomeName();
       case "item_in_hand":
@@ -129,18 +142,62 @@ public final class PlayerExpansion extends PlaceholderExpansion {
         return String.valueOf(stats.get(DefaultEntityStatTypes.getSignatureEnergy()).getMax());
       case "signature_energy_min":
         return String.valueOf(stats.get(DefaultEntityStatTypes.getSignatureEnergy()).getMin());
-    } 
+    }
     if (identifier.startsWith("has_permission_")) {
       if ((identifier.split("has_permission_")).length > 1) {
         String perm = identifier.split("has_permission_")[1];
         return bool(p.hasPermission(perm));
-      } 
+      }
       return bool(false);
-    } 
+    }
     return null;
   }
-  
+
   public String bool(boolean b) {
-    return b ? PlaceholderAPIPlugin.instance().configManager().config().booleanValue().trueValue() : PlaceholderAPIPlugin.instance().configManager().config().booleanValue().falseValue();
+    return b ? PlaceholderAPIPlugin.instance().configManager().config().booleanValue().trueValue()
+        : PlaceholderAPIPlugin.instance().configManager().config().booleanValue().falseValue();
+  }
+
+  private String worldGenType(IWorldGenProvider provider) {
+    if (provider == null)
+      return null;
+
+    try {
+      Field idField = provider.getClass().getField("ID");
+      Object id = idField.get(null);
+      if (id instanceof String)
+        return (String) id;
+    } catch (Exception ignored) {
+    }
+
+    String simpleName = provider.getClass().getSimpleName();
+    if (simpleName.endsWith("WorldGenProvider"))
+      return simpleName.substring(0, simpleName.length() - "WorldGenProvider".length());
+
+    return simpleName;
+  }
+
+  private String worldGenName(IWorldGenProvider provider) {
+    if (provider == null)
+      return null;
+
+    try {
+      Method getName = provider.getClass().getMethod("getName");
+      Object value = getName.invoke(provider);
+      if (value instanceof String)
+        return (String) value;
+    } catch (Exception ignored) {
+    }
+
+    try {
+      Field nameField = provider.getClass().getDeclaredField("name");
+      nameField.setAccessible(true);
+      Object value = nameField.get(provider);
+      if (value instanceof String)
+        return (String) value;
+    } catch (Exception ignored) {
+    }
+
+    return null;
   }
 }
