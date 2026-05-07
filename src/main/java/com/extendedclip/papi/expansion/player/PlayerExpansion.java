@@ -46,6 +46,7 @@ import static com.extendedclip.papi.expansion.player.PlayerUtil.getXZDirection;
 import static com.extendedclip.papi.expansion.player.PlayerUtil.itemInHand;
 
 public final class PlayerExpansion extends PlaceholderExpansion implements Configurable {
+
     private String low;
     private String medium;
     private String high;
@@ -64,21 +65,28 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
 
     @Override
     public String getIdentifier() {
+
         return "player";
+
     }
 
     @Override
     public String getAuthor() {
+
         return "clip";
+
     }
 
     @Override
     public String getVersion() {
+
         return "2.0.9";
+
     }
 
     @Override
     public Map<String, Object> getDefaults() {
+
         Map<String, Object> defaults = new HashMap<>();
         defaults.put("ping_color.high", "&c");
         defaults.put("ping_color.medium", "&e");
@@ -94,6 +102,7 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
         defaults.put("direction.west", "W");
         defaults.put("direction.north_west", "NW");
         return defaults;
+
     }
 
     @Override
@@ -102,17 +111,23 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
         final boolean targetedPing = identifier.startsWith("ping_");
         final boolean targetedColoredPing = identifier.startsWith("colored_ping_");
         if (targetedPing || targetedColoredPing) {
-            final Player target = Bukkit.getPlayer(identifier.substring(targetedPing ? 5 : 13)); // yes, I know, magic value
+
+            final Player target = Bukkit.getPlayer(identifier.substring(targetedPing ? 5 : 13)); // yes, I know, magic
+                                                                                                 // value
 
             return target == null ? "0" : retrievePing(target, targetedColoredPing);
+
         }
 
         if (player == null) {
+
             return "";
+
         }
 
         // offline placeholders
         switch (identifier) {
+
             case "name":
                 return player.getName();
             case "uuid":
@@ -146,59 +161,85 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
             case "bed_z":
                 return player.getBedSpawnLocation() != null ? String.valueOf(player.getBedSpawnLocation().getZ()) : "";
             case "bed_world":
-                return player.getBedSpawnLocation() != null ? player.getBedSpawnLocation().getWorld()
-                        .getName() : "";
+                return player.getBedSpawnLocation() != null ? player.getBedSpawnLocation().getWorld().getName() : "";
 
         }
 
         // online placeholders
         if (!player.isOnline()) {
+
             return "";
+
         }
 
         Player p = player.getPlayer();
 
         // to get rid of IDE warnings
         if (p == null) {
+
             return "";
+
         }
 
         if (identifier.startsWith("has_permission_")) {
+
             if (identifier.split("has_permission_").length > 1) {
+
                 String perm = identifier.split("has_permission_")[1];
                 return bool(p.hasPermission(perm));
+
             }
+
             return bool(false);
+
         }
 
         if (identifier.startsWith("has_potioneffect_")) {
+
             if (identifier.split("has_potioneffect_").length > 1) {
+
                 String effect = identifier.split("has_potioneffect_")[1];
                 PotionEffectType potion = PotionEffectType.getByName(effect);
                 return bool(p.hasPotionEffect(potion));
+
             }
+
         }
 
         if (identifier.startsWith("item_in_hand_level_")) {
+
             if (identifier.split("item_in_hand_level_").length > 1) {
+
                 String enchantment = identifier.split("item_in_hand_level_")[1];
                 return String.valueOf(itemInHand(p).getEnchantmentLevel(Enchantment.getByName(enchantment)));
+
             }
+
             return "0";
+
         }
+
         if (identifier.startsWith("item_in_offhand_level_")) {
+
             if (identifier.split("item_in_offhand_level_").length > 1) {
+
                 String enchantment = identifier.split("item_in_offhand_level_")[1];
-                return String.valueOf(p.getInventory().getItemInOffHand().getEnchantmentLevel(Enchantment.getByName(enchantment)));
+                return String.valueOf(
+                        p.getInventory().getItemInOffHand().getEnchantmentLevel(Enchantment.getByName(enchantment)));
+
             }
+
             return "0";
+
         }
 
         if (identifier.startsWith("locale")) {
+
             String localeStr = PlayerUtil.getLocale(p);
             String localeStrISO = localeStr.replace("_", "-");
 
             switch (identifier) {
+
                 case "locale":
                     return localeStr;
                 case "locale_country":
@@ -218,16 +259,25 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
                     return locale.getDisplayName();
                 case "locale_short":
                     return localeStr.substring(0, localeStr.indexOf("_"));
+
             }
+
         }
 
         switch (identifier) {
+
             case "absorption": {
+
                 if (VersionHelper.HAS_ABSORPTION_METHODS) {
+
                     return Integer.toString((int) p.getAbsorptionAmount());
+
                 } else {
+
                     return "-1";
+
                 }
+
             }
             case "has_empty_slot":
                 return bool(p.getInventory().firstEmpty() > -1);
@@ -244,6 +294,7 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
                 return p.getGameMode().name();
             case "direction":
                 switch (getDirection(p)) {
+
                     case NORTH:
                         return north;
                     case NORTH_EAST:
@@ -260,6 +311,7 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
                         return west;
                     case NORTH_WEST:
                         return northWest;
+
                 }
                 return "";
             case "direction_xz":
@@ -269,11 +321,17 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
             case "world_type":
                 World.Environment environment = p.getWorld().getEnvironment();
                 if (environment == World.Environment.NETHER) {
+
                     return "Nether";
+
                 } else if (environment == World.Environment.THE_END) {
+
                     return "The End";
+
                 } else if (environment == World.Environment.NORMAL) {
+
                     return "Overworld";
+
                 }
                 return "";
             case "x":
@@ -339,16 +397,24 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
             case "has_health_boost":
                 return bool(p.hasPotionEffect(PotionEffectType.HEALTH_BOOST));
             case "health_boost": {
+
                 if (p.getHealthScale() > 20) {
+
                     return Double.toString(p.getHealthScale() - 20);
+
                 } else {
+
                     return "0";
+
                 }
+
             }
             case "item_in_hand":
                 return String.valueOf(itemInHand(p).getType());
             case "item_in_hand_name":
-                return itemInHand(p).getType() != Material.AIR && itemInHand(p).getItemMeta().hasDisplayName() ? itemInHand(p).getItemMeta().getDisplayName() : "";
+                return itemInHand(p).getType() != Material.AIR && itemInHand(p).getItemMeta().hasDisplayName()
+                        ? itemInHand(p).getItemMeta().getDisplayName()
+                        : "";
             case "item_in_hand_data":
                 return itemInHand(p).getType() != Material.AIR ? String.valueOf(itemInHand(p).getDurability()) : "0";
             case "item_in_hand_durability":
@@ -356,9 +422,14 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
             case "item_in_offhand":
                 return String.valueOf(p.getInventory().getItemInOffHand().getType());
             case "item_in_offhand_name":
-                return p.getInventory().getItemInOffHand().getType() != Material.AIR && p.getInventory().getItemInOffHand().getItemMeta().hasDisplayName() ? p.getInventory().getItemInOffHand().getItemMeta().getDisplayName() : "";
+                return p.getInventory().getItemInOffHand().getType() != Material.AIR
+                        && p.getInventory().getItemInOffHand().getItemMeta().hasDisplayName()
+                                ? p.getInventory().getItemInOffHand().getItemMeta().getDisplayName()
+                                : "";
             case "item_in_offhand_data":
-                return p.getInventory().getItemInOffHand().getType() != Material.AIR ? String.valueOf(p.getInventory().getItemInOffHand().getDurability()) : "0";
+                return p.getInventory().getItemInOffHand().getType() != Material.AIR
+                        ? String.valueOf(p.getInventory().getItemInOffHand().getDurability())
+                        : "0";
             case "item_in_offhand_durability":
                 return String.valueOf(durability(p.getInventory().getItemInOffHand()));
             case "last_damage":
@@ -374,27 +445,38 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
             case "no_damage_ticks":
                 return String.valueOf(p.getNoDamageTicks());
             case "armor_helmet_name":
-                return Optional.ofNullable(p.getInventory().getHelmet()).map(a -> a.getItemMeta().getDisplayName()).orElse("");
+                return Optional.ofNullable(p.getInventory().getHelmet()).map(a -> a.getItemMeta().getDisplayName())
+                        .orElse("");
             case "armor_helmet_data":
-                return p.getInventory().getHelmet() != null ? String.valueOf(p.getInventory().getHelmet().getDurability()) : "0";
+                return p.getInventory().getHelmet() != null
+                        ? String.valueOf(p.getInventory().getHelmet().getDurability())
+                        : "0";
             case "armor_helmet_durability":
                 return String.valueOf(durability(p.getInventory().getHelmet()));
             case "armor_chestplate_name":
-                return Optional.ofNullable(p.getInventory().getChestplate()).map(a -> a.getItemMeta().getDisplayName()).orElse("");
+                return Optional.ofNullable(p.getInventory().getChestplate()).map(a -> a.getItemMeta().getDisplayName())
+                        .orElse("");
             case "armor_chestplate_data":
-                return p.getInventory().getChestplate() != null ? String.valueOf(p.getInventory().getChestplate().getDurability()) : "0";
+                return p.getInventory().getChestplate() != null
+                        ? String.valueOf(p.getInventory().getChestplate().getDurability())
+                        : "0";
             case "armor_chestplate_durability":
                 return String.valueOf(durability(p.getInventory().getChestplate()));
             case "armor_leggings_name":
-                return Optional.ofNullable(p.getInventory().getLeggings()).map(a -> a.getItemMeta().getDisplayName()).orElse("");
+                return Optional.ofNullable(p.getInventory().getLeggings()).map(a -> a.getItemMeta().getDisplayName())
+                        .orElse("");
             case "armor_leggings_data":
-                return p.getInventory().getLeggings() != null ? String.valueOf(p.getInventory().getLeggings().getDurability()) : "0";
+                return p.getInventory().getLeggings() != null
+                        ? String.valueOf(p.getInventory().getLeggings().getDurability())
+                        : "0";
             case "armor_leggings_durability":
                 return String.valueOf(durability(p.getInventory().getLeggings()));
             case "armor_boots_name":
-                return Optional.ofNullable(p.getInventory().getBoots()).map(a -> a.getItemMeta().getDisplayName()).orElse("");
+                return Optional.ofNullable(p.getInventory().getBoots()).map(a -> a.getItemMeta().getDisplayName())
+                        .orElse("");
             case "armor_boots_data":
-                return p.getInventory().getBoots() != null ? String.valueOf(p.getInventory().getBoots().getDurability()) : "0";
+                return p.getInventory().getBoots() != null ? String.valueOf(p.getInventory().getBoots().getDurability())
+                        : "0";
             case "armor_boots_durability":
                 return String.valueOf(durability(p.getInventory().getBoots()));
             case "ping":
@@ -445,13 +527,17 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
                 return bool(p.isLeashed());
             case "is_inside_vehicle":
                 return bool(p.isInsideVehicle());
+
         }
+
         // return null for unknown placeholders
         return null;
+
     }
 
     @Override
     public boolean register() {
+
         low = this.getString("ping_color.low", "&a");
         medium = this.getString("ping_color.medium", "&e");
         high = this.getString("ping_color.high", "&c");
@@ -466,22 +552,28 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
         west = this.getString("direction.west", "W");
         northWest = this.getString("direction.north_west", "NW");
 
-
         return super.register();
+
     }
 
     public String bool(boolean b) {
+
         return b ? PlaceholderAPIPlugin.booleanTrue() : PlaceholderAPIPlugin.booleanFalse();
+
     }
 
-
     private String retrievePing(final Player player, final boolean colored) {
+
         final int ping = PlayerUtil.getPing(player);
         if (!colored) {
+
             return String.valueOf(ping);
+
         }
 
-        return ChatColor.translateAlternateColorCodes('&', ping > highValue ? high : ping > mediumValue ? medium : low) + ping;
+        return ChatColor.translateAlternateColorCodes('&', ping > highValue ? high : ping > mediumValue ? medium : low)
+                + ping;
+
     }
 
 }
