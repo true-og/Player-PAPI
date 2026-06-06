@@ -374,25 +374,25 @@ public final class PlayerExpansion extends PlaceholderExpansion implements Confi
             case "no_damage_ticks":
                 return String.valueOf(p.getNoDamageTicks());
             case "armor_helmet_name":
-                return Optional.ofNullable(p.getInventory().getHelmet()).map(a -> a.getItemMeta().getDisplayName()).orElse("");
+                return Optional.ofNullable(p.getInventory().getHelmet()).flatMap(item -> Optional.ofNullable(item.getItemMeta())).map(meta -> meta.getDisplayName()).orElse("");
             case "armor_helmet_data":
                 return p.getInventory().getHelmet() != null ? String.valueOf(p.getInventory().getHelmet().getDurability()) : "0";
             case "armor_helmet_durability":
                 return String.valueOf(durability(p.getInventory().getHelmet()));
             case "armor_chestplate_name":
-                return Optional.ofNullable(p.getInventory().getChestplate()).map(a -> a.getItemMeta().getDisplayName()).orElse("");
+                return Optional.ofNullable(p.getInventory().getChestplate()).flatMap(item -> Optional.ofNullable(item.getItemMeta())).map(meta -> meta.getDisplayName()).orElse("");
             case "armor_chestplate_data":
                 return p.getInventory().getChestplate() != null ? String.valueOf(p.getInventory().getChestplate().getDurability()) : "0";
             case "armor_chestplate_durability":
                 return String.valueOf(durability(p.getInventory().getChestplate()));
             case "armor_leggings_name":
-                return Optional.ofNullable(p.getInventory().getLeggings()).map(a -> a.getItemMeta().getDisplayName()).orElse("");
+                return Optional.ofNullable(p.getInventory().getLeggings()).flatMap(item -> Optional.ofNullable(item.getItemMeta())).map(meta -> meta.getDisplayName()).orElse("");
             case "armor_leggings_data":
                 return p.getInventory().getLeggings() != null ? String.valueOf(p.getInventory().getLeggings().getDurability()) : "0";
             case "armor_leggings_durability":
                 return String.valueOf(durability(p.getInventory().getLeggings()));
             case "armor_boots_name":
-                return Optional.ofNullable(p.getInventory().getBoots()).map(a -> a.getItemMeta().getDisplayName()).orElse("");
+                return Optional.ofNullable(p.getInventory().getBoots()).flatMap(item -> Optional.ofNullable(item.getItemMeta())).map(meta -> meta.getDisplayName()).orElse("");
             case "armor_boots_data":
                 return p.getInventory().getBoots() != null ? String.valueOf(p.getInventory().getBoots().getDurability()) : "0";
             case "armor_boots_durability":
